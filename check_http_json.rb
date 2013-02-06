@@ -90,37 +90,33 @@ def nutty_parse(thresh, want, got, v, element)
         else
             retval = 'OK'
         end
-    end
 
     # got > want
-    if want =~ /^~:(\d+)$/ then
+    elsif want =~ /^~:(\d+)$/ then
         if got.to_i > $1.to_i then
             retval = '%s is below threshold value %s (%s)' % [element, $1, got]
         else
             retval = 'OK'
         end
-    end
 
     # outside specific range
-    if want =~ /^(\d+):(\d+)$/ then
+    elsif want =~ /^(\d+):(\d+)$/ then
         if got.to_i < $1.to_i or got.to_i > $2.to_i then
             retval = '%s is outside expected range [%s:%s] (%s)' % [element, $1, $2, got] 
         else
             retval = 'OK'
         end
-    end
 
     # inside specific range
-    if want =~ /^@(\d+):(\d+)$/ then
+    elsif want =~ /^@(\d+):(\d+)$/ then
         if got.to_i >= $1.to_i and got.to_i <= $2.to_i then
             retval = '%s is in  value range [%s:%s] (%s)' % [element, $1, $2, got]
         else
             retval = 'OK'
         end
-    end
 
     # otherwise general range
-    if not want =~ /\D/ then
+    elsif not want =~ /\D/ then
         if got.to_i > want.to_i then
             retval = '%s is above threshold value %s (%s)' % [element, want, got]
         elsif got.to_i < 0  then
@@ -128,12 +124,10 @@ def nutty_parse(thresh, want, got, v, element)
         else
             retval = 'OK'
         end
-    end
 
-    if retval == 'OK' then
+    elsif retval == 'OK' then
         say(v, '%s threshold not exceeded.' % [thresh])
-    elsif retval == 'KO' then
-        say(v, '%s threshold exceeded.' % [thresh])
+
     else
         say(v, '"%s" is a strange and confusing %s value.' % [want, thresh])
     end
