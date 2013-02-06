@@ -82,9 +82,12 @@ end
 def nutty_parse(thresh, want, got, v, element)
     retval = 'FAIL'
  
+    if got == nil then
+        retval = "sorry, I can't compare the nil I've got with any thresholds"
+
     # if there is a non-numeric character we have to deal with that
     # got < want
-    if want =~ /^(\d+):$/ then
+    elsif want =~ /^(\d+):$/ then
         if got.to_i < $1.to_i then
             retval = '%s is above threshold value %s (%s)' % [element, $1, got]
         else
