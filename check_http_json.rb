@@ -54,21 +54,22 @@ def do_exit (v, code)
 end
 
 # As the results may be nested hashes; flatten that out into something manageable.
-def hash_flatten(hash, delimiter, prefix = nil, flat = {})
+def hash_flatten(hash, delimiter, ignorenil, prefix = nil, flat = {})
     if hash.is_a? Array then
+        hash = hash.compact if ignorenil
         hash.each_index do |index|
             newkey = index
             newkey = nil if hash.length == 1
             newkey = prefix if prefix
             val = hash[index]
-            hash_flatten val, delimiter, newkey, flat
+            hash_flatten val, delimiter, ignorenil, newkey, flat
         end
     elsif hash.is_a? Hash then
         hash.keys.each do |key|
             newkey = key
             newkey = '%s%s%s' % [prefix, delimiter, key] if prefix
             val = hash[key]
-            hash_flatten val, delimiter, newkey, flat
+            hash_flatten val, delimiter, ignorenil, newkey, flat
         end
     else
         flat[prefix] = hash
@@ -211,6 +212,11 @@ def parse_args(options)
         options[:v] = false
         opts.on('-v', '--verbose', 'Additional human output.') do
             options[:v] = true
+        end
+
+        options[:ignorenil] = false
+        opts.on('-n', '--ignorenil', 'cut off nil check values') do
+            options[:ignorenil] = true
         end
 
         options[:uri] = nil
@@ -359,7 +365,7 @@ if options[:file] then
 end
 
 # Flatten that bad boy.
-json_flat = hash_flatten(json, options[:delimiter])
+json_flat = hash_flatten(json, options[:delimiter], options[:ignorenil])
 
 # If the element is a string...
 if options[:element_string] then
