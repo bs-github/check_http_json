@@ -9,6 +9,7 @@ Usage
     Usage: ./check_http_json.rb -u <URI> -e <element> -w <warn> -c <crit>
     -h, --help                       Help info.
     -v, --verbose                    Additional human output.
+    -n, --ignorenil                  cut off nil check values
     -u, --uri URI                    Target URI. Incompatible with -f.
         --user USERNAME              HTTP basic authentication username.
         --pass PASSWORD              HTTP basic authentication password.
