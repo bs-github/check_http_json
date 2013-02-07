@@ -155,16 +155,18 @@ def uri_target(options)
             response = http.request(request)
         end
     rescue Timeout::Error
-        say(options[:v], 'The HTTP connection timed out after %i seconds.' % [options[:timeout]])
+        say(options[:v], 'The HTTP connection to %s timed out after %i seconds.' % [uri, options[:timeout]])
         puts 'CRIT: Connection timed out.'
         do_exit(options[:v], 2)
     rescue Exception => e
-        say(options[:v], "Exception occured: #{e}.")
+        say(options[:v], 'The HTTP connection to %s failed.' % [uri])
+        puts "UNKNOWN: couldn't get data to check against: #{e}."
         do_exit(options[:v], 3)
     end
 
     # We must get a proper response.
     if not response.code.to_i == 200 then
+        say(options[:v], 'The HTTP connection to %s failed.' % [uri])
         puts 'WARN: Received HTTP code %s instead of 200.' % [response.code]
         do_exit(options[:v], 1)
     end
